@@ -1,4 +1,4 @@
-# Linux Server and We App Configuration
+# Linux Server and Web App Configuration
 ## Project Scope
 Take a baseline installation of a Linux distribution on a virtual 
 machine and prepare it to host your web applications, to include installing updates, 
