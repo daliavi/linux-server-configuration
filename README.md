@@ -51,18 +51,17 @@ $ passwd grader
 ```sh
 $ nano .ssh/authorized_keys
 ```
-- changed ownership and permissions of the authorized_keys file and .ssh dir
+- changed ownership and permissions of the `authorized_keys` file and `.ssh` dir
 ```sh
 $ chown grader ~grader/.ssh/authorized_keys 
 $ chmod 644 ~grader/.ssh/authorized_keys 
 $ chmod 700 ~grader/.ssh
 ```
-- added user configuration to to sudoers.d 
+- added user configuration to `sudoers.d`
 ```sh
 $ visudo -f /etc/sudoers.d/grader 
+grader ALL=(ALL:ALL) ALL
 ```
- - file content `grader ALL=(ALL:ALL) ALL`
-
 - added the host name to avoid warning message when using `sudo` command
 ```
 $ nano /etc/hostname
@@ -79,9 +78,8 @@ $ nano /etc/hosts
 ```sh
 $ nano /etc/ssh/sshd_config
 ```
-
-   * set `PasswordAuthentication no` to enforce key-based SSH authentication
-   * set `Port 2200` to change SSH port from default to 2200
+   set `PasswordAuthentication no` to enforce key-based SSH authentication
+   set `Port 2200` to change SSH port from default to 2200
 
 
 ### Server and Firewall configuration
