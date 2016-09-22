@@ -125,25 +125,41 @@ WHERE grantee='catalog';
 ```
 
 
-### git configuration
+### Git configuration
 - ```git config --global user.name USERNAME```
 - ```git config --global user.email EMAIL```
 - ```git clone https://github.com/daliavi/trivia-catalog-postgres.git```
 
 ### Apache configuration
-- set apache user www-data in `/etc/apache2/envvar`
+- set apache user `www-data` in `/etc/apache2/envvar`
 - removed default config file `000-default.conf` from `/etc/apache2/sites-enabled`
 
 ### App configuration 
 Web-server has been configured to serve the Item Catalog application as a wsgi app.
-- created wsgi file `nano /var/www/trivia-catalog-app/trivia-catalog-app.wsgi`
-- added apache configuration file for the web app `nano /etc/apache2/sites-available/trivia-catalog-app.conf`
-- changed the owner of the app files: chown -R www-data *
+- created wsgi file 
+```$ nano /var/www/trivia-catalog-app/trivia-catalog-app.wsgi```
+- added apache configuration file for the web app 
+```$ nano /etc/apache2/sites-available/trivia-catalog-app.conf```
+- changed the owner of the app files
+```$ chown -R www-data *```
 - adjusted read/write permissions for static/avatar directories
+(it was probably not needed, but I missed them up while trying to run the app as grader)
 - updated Google and Facebook oauth with valid URIs with the new IP and URL
 - changed connection from SQLite to PostgreSQL
-- changed file paths to credential files and in photo upload method
+- changed file paths to the credential files and in the photo upload method
+```
+dir_path = os.path.dirname(os.path.realpath(__file__))
+fb_secret_path = '/'.join([dir_path, 'fb_client_secrets.json'])
+g_secret_path = '/'.join([dir_path, 'client_secrets.json'])
+
+... 
+app.config['UPLOAD_FOLDER_ABS'] =''.join([dir_path, UPLOAD_FOLDER])
+file.save(os.path.join(app.config['UPLOAD_FOLDER_ABS'], new_filename))
+
+```
+
 - renamed project.py to __init__.py
+```$mv project.py __init__.py ```
 
 
 # Resources:
