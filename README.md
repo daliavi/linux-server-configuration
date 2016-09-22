@@ -7,7 +7,7 @@ securing it from a number of attack vectors and installing/configuring web and d
 ## Server Access
 - IP address: `52.11.253.245`
 - URL: `http://ec2-52-11-253-245.us-west-2.compute.amazonaws.com`
-- ssh login: ssh -i ~/.ssh/udacity_key.rsa grader@52.11.253.245 -p 2200
+- ssh login: `ssh -i ~/.ssh/udacity_key.rsa grader@52.11.253.245 -p 2200`
 
 ## Software installed
 - Updated Ubuntu sources and upgraded packages:
@@ -101,7 +101,7 @@ $ ufw enable
 ### PostgreSQL configuration
 - loged in as `postgres` user, set the password
 ```
-sudo -u postgres psql
+$ sudo -u postgres psql
 \password
 ```
 - created user `catalog`, set the password
@@ -235,7 +235,9 @@ engine = db_connect()
 Base.metadata.create_all(engine)
 ```
 - renamed `project.py` to `__init__.py`
-```$mv project.py __init__.py ```
+```
+$mv project.py __init__.py 
+```
 - changed file paths to the credential files and in the photo upload method in `__init__.py`
 
 ```python
@@ -269,5 +271,4 @@ http://stackoverflow.com
 
 http://dba.stackexchange.com/questions/33943/granting-access-to-all-tables-for-a-user
 
-Udacity classes and forums
-
+https://discussions.udacity.com/
