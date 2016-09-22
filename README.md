@@ -146,20 +146,21 @@ Web-server has been configured to serve the Item Catalog application as a wsgi a
 (it was probably not needed, but I missed them up while trying to run the app as grader)
 - updated Google and Facebook oauth with valid URIs with the new IP and URL
 - changed connection from SQLite to PostgreSQL
-- changed file paths to the credential files and in the photo upload method
-```
+- renamed `project.py` to `__init__.py`
+```$mv project.py __init__.py ```
+- changed file paths to the credential files and in the photo upload method in `__init__.py`
+```python
 dir_path = os.path.dirname(os.path.realpath(__file__))
 fb_secret_path = '/'.join([dir_path, 'fb_client_secrets.json'])
 g_secret_path = '/'.join([dir_path, 'client_secrets.json'])
-
 ... 
 app.config['UPLOAD_FOLDER_ABS'] =''.join([dir_path, UPLOAD_FOLDER])
+...
 file.save(os.path.join(app.config['UPLOAD_FOLDER_ABS'], new_filename))
 
 ```
 
-- renamed project.py to __init__.py
-```$mv project.py __init__.py ```
+
 
 
 # Resources:
@@ -167,6 +168,8 @@ https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-applicati
 http://flask.pocoo.org/docs/0.11/deploying/mod_wsgi
 https://httpd.apache.org/docs/2.4/vhosts/examples.html
 https://www.postgresql.org/docs/9.3/static
+http://newcoder.io/scrape/part-3/
+
 http://askubuntu.com
 http://stackoverflow.com
 http://dba.stackexchange.com/questions/33943/granting-access-to-all-tables-for-a-user
