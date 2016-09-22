@@ -126,9 +126,9 @@ WHERE grantee='catalog';
 
 
 ### git configuration
-- git config --global user.name USERNAME
-- git config --global user.email EMAIL
-- git clone https://github.com/daliavi/trivia-catalog-postgres.git
+- ```git config --global user.name USERNAME```
+- ```git config --global user.email EMAIL```
+- ```git clone https://github.com/daliavi/trivia-catalog-postgres.git```
 
 ### Apache configuration
 - set apache user www-data in `/etc/apache2/envvar`
