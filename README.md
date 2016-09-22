@@ -79,6 +79,7 @@ $ nano /etc/hosts
 $ nano /etc/ssh/sshd_config
 ```
    set `PasswordAuthentication no` to enforce key-based SSH authentication
+   
    set `Port 2200` to change SSH port from default to 2200
 
 
