@@ -106,26 +106,16 @@ sudo -u postgres psql
 \password
 ```
 - create user catalog, set password
-``` CREATE USER catalog WITH PASSWORD 'PASSWORD_HERE';```
-- enabled psw logins (md5) for `catalog` and `posgres` users, confirmed only local connections are allowed
-```
-$ nano /etc/postgresql/9.3/main/pg_hba.conf
+``` 
+CREATE USER catalog WITH PASSWORD 'PASSWORD_HERE';
 ```
 
+- created database `trivia`
 ```
-# Database administrative login by Unix domain socket
-local   all             postgres                                md5
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-local   trivia          catalog                                 md5
-# "local" is for Unix domain socket connections only
-local   all             all                                     md5
-# IPv4 local connections:
-host    all             all             127.0.0.1/32            md5
-
+CREATE DATABASE trivia OWNER catalog;
 ```
 
-
-- create database trivia and give rights to the catalog user
+- gave rights to the catalog user
 ```
 REVOKE CONNECT ON DATABASE trivia FROM PUBLIC;
 ```
@@ -144,6 +134,23 @@ TO catalog;
 ```
 SELECT * FROM information_schema.role_table_grants
 WHERE grantee='catalog';
+```
+
+- enabled psw logins (md5) for `catalog` and `posgres` users, confirmed that only local connections are allowed
+```
+$ nano /etc/postgresql/9.3/main/pg_hba.conf
+```
+
+```
+# Database administrative login by Unix domain socket
+local   all             postgres                                md5
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+local   trivia          catalog                                 md5
+# "local" is for Unix domain socket connections only
+local   all             all                                     md5
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+
 ```
 
 
