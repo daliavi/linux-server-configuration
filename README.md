@@ -80,8 +80,8 @@ $ nano /etc/hosts
 $ nano /etc/ssh/sshd_config
 ```
 
-   - set `PasswordAuthentication no` to enforce key-based SSH authentication
-   - set `Port 2200` to change SSH port from default to 2200
+   * set `PasswordAuthentication no` to enforce key-based SSH authentication
+   * set `Port 2200` to change SSH port from default to 2200
 
 
 ### Server and Firewall configuration
@@ -100,9 +100,31 @@ $ ufw enable
 ```
 
 ### PostgreSQL configuration
-- login as postgres user, set password, enable psw logins in /etc/postgresql/9.3/main/pg_hba.conf
-- create user catalog, set password, enable psw logins in /etc/postgresql/9.3/main/pg_hba.conf
-- confirmed only local connections are allowed in /etc/postgresql/9.3/main/pg_hba.conf
+- login as postgres user, set password
+```
+sudo -u postgres psql
+\password
+```
+- create user catalog, set password
+``` CREATE USER catalog WITH PASSWORD 'PASSWORD_HERE';```
+- enabled psw logins (md5) for `catalog` and `posgres` users, confirmed only local connections are allowed
+```
+$ nano /etc/postgresql/9.3/main/pg_hba.conf
+```
+
+```
+# Database administrative login by Unix domain socket
+local   all             postgres                                md5
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+local   trivia          catalog                                 md5
+# "local" is for Unix domain socket connections only
+local   all             all                                     md5
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+
+```
+
+
 - create database trivia and give rights to the catalog user
 ```
 REVOKE CONNECT ON DATABASE trivia FROM PUBLIC;
@@ -149,6 +171,7 @@ Web-server has been configured to serve the Item Catalog application as a wsgi a
 - renamed `project.py` to `__init__.py`
 ```$mv project.py __init__.py ```
 - changed file paths to the credential files and in the photo upload method in `__init__.py`
+
 ```python
 dir_path = os.path.dirname(os.path.realpath(__file__))
 fb_secret_path = '/'.join([dir_path, 'fb_client_secrets.json'])
@@ -165,13 +188,20 @@ file.save(os.path.join(app.config['UPLOAD_FOLDER_ABS'], new_filename))
 
 # Resources:
 https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps
+
 http://flask.pocoo.org/docs/0.11/deploying/mod_wsgi
+
 https://httpd.apache.org/docs/2.4/vhosts/examples.html
+
 https://www.postgresql.org/docs/9.3/static
+
 http://newcoder.io/scrape/part-3/
 
 http://askubuntu.com
+
 http://stackoverflow.com
+
 http://dba.stackexchange.com/questions/33943/granting-access-to-all-tables-for-a-user
+
 Udacity classes and forums
 
