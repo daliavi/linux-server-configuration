@@ -161,8 +161,8 @@ $ git config --global user.email EMAIL
 - set apache user `www-data` in `/etc/apache2/envvar`
 - removed default config file `000-default.conf` from `/etc/apache2/sites-enabled`
 
-### App configuration 
-Web-server has been configured to serve the Item Catalog application as a wsgi app.
+### Application configuration 
+Web-server has been configured to serve the Trivia Catalog application as a wsgi app.
 
 - Navigated to the project directory `/var/www/TriviaCatalogApp` and downloaded the repo:
 ```ssh
