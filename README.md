@@ -38,13 +38,15 @@ $ apt-get autoremove
 ## Server and Web App Configurations 
 
 
-### Adding a user
+### User and SSH configuration
 - created a user 'grader'
 ```sh
 $ adduser grader
 ```
 - set password
-
+```sh
+$ passwd grader
+```
 - added the public key (in the home dir of the user)
 ```sh
 $ nano .ssh/authorized_keys
@@ -63,12 +65,12 @@ $ visudo -f /etc/sudoers.d/grader
 
 - added the host name to avoid warning message when using `sudo` command
 ```
-cat /etc/hostname
+$ nano /etc/hostname
 ip-10-20-45-81
 ```
 
 ```
-cat /etc/hosts
+$ nano /etc/hosts
 127.0.0.1 localhost
 127.0.0.1 ip-10-20-45-81
 ```
@@ -77,11 +79,12 @@ cat /etc/hosts
 ```sh
 $ nano /etc/ssh/sshd_config
 ```
+   
     - set `PasswordAuthentication no` to enforce key-based SSH authentication
     - set `Port 2200` to change SSH port from default to 2200
 
 
-### Server and Firewall config
+### Server and Firewall configuration
 - confirmed the timezone on the server was UTC
 ```sh
 $ date +%Z
@@ -96,7 +99,7 @@ $ ufw allow ntp
 $ ufw enable
 ```
 
-### postgres
+### PostgreSQL configuration
 - login as postgres user, set password, enable psw logins in /etc/postgresql/9.3/main/pg_hba.conf
 - create user catalog, set password, enable psw logins in /etc/postgresql/9.3/main/pg_hba.conf
 - confirmed only local connections are allowed in /etc/postgresql/9.3/main/pg_hba.conf
@@ -122,16 +125,17 @@ WHERE grantee='catalog';
 ```
 
 
-### git config
+### git configuration
 - git config --global user.name USERNAME
 - git config --global user.email EMAIL
 - git clone https://github.com/daliavi/trivia-catalog-postgres.git
 
-### Apache config
+### Apache configuration
 - set apache user www-data in `/etc/apache2/envvar`
 - removed default config file `000-default.conf` from `/etc/apache2/sites-enabled`
 
-### App config (Web-server has been configured to serve the Item Catalog application as a wsgi app.)
+### App configuration 
+Web-server has been configured to serve the Item Catalog application as a wsgi app.
 - created wsgi file `nano /var/www/trivia-catalog-app/trivia-catalog-app.wsgi`
 - added apache configuration file for the web app `nano /etc/apache2/sites-available/trivia-catalog-app.conf`
 - changed the owner of the app files: chown -R www-data *
