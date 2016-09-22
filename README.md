@@ -39,7 +39,7 @@ $ apt-get autoremove
 
 
 ### User and SSH configuration
-- created a user 'grader'
+- created a user `grader`
 ```sh
 $ adduser grader
 ```
@@ -78,9 +78,9 @@ $ nano /etc/hosts
 ```sh
 $ nano /etc/ssh/sshd_config
 ```
-        * set `PasswordAuthentication no` to enforce key-based SSH authentication
+   set `PasswordAuthentication no` to enforce key-based SSH authentication
    
-        * set `Port 2200` to change SSH port from default to 2200
+   set `Port 2200` to change SSH port from default to 2200
 
 
 ### Server and Firewall configuration
@@ -99,12 +99,12 @@ $ ufw enable
 ```
 
 ### PostgreSQL configuration
-- login as postgres user, set password
+- loged in as `postgres` user, set the password
 ```
 sudo -u postgres psql
 \password
 ```
-- create user catalog, set password
+- created user `catalog`, set the password
 ``` 
 CREATE USER catalog WITH PASSWORD 'PASSWORD_HERE';
 ```
@@ -114,7 +114,7 @@ CREATE USER catalog WITH PASSWORD 'PASSWORD_HERE';
 CREATE DATABASE trivia OWNER catalog;
 ```
 
-- gave rights to the catalog user
+- granted privileges to the `catalog` user
 ```
 REVOKE CONNECT ON DATABASE trivia FROM PUBLIC;
 ```
@@ -129,18 +129,16 @@ ON ALL TABLES IN SCHEMA public
 TO catalog;
 ```
 
-- check if rights were granted:
+- checked if rights were granted:
 ```
 SELECT * FROM information_schema.role_table_grants
 WHERE grantee='catalog';
 ```
 
-- enabled psw logins (md5) for `catalog` and `posgres` users, confirmed that only local connections are allowed
-```
-$ nano /etc/postgresql/9.3/main/pg_hba.conf
-```
+- enabled password logins (md5) for `catalog` and `posgres` users, confirmed that only local connections were allowed
 
 ```
+$ nano /etc/postgresql/9.3/main/pg_hba.conf
 # Database administrative login by Unix domain socket
 local   all             postgres                                md5
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
@@ -149,14 +147,15 @@ local   trivia          catalog                                 md5
 local   all             all                                     md5
 # IPv4 local connections:
 host    all             all             127.0.0.1/32            md5
-
 ```
 
 
 ### Git configuration
-- ```git config --global user.name USERNAME```
-- ```git config --global user.email EMAIL```
-- ```git clone https://github.com/daliavi/trivia-catalog-postgres.git```
+
+```ssh
+$ git config --global user.name USERNAME
+$ git config --global user.email EMAIL
+```
 
 ### Apache configuration
 - set apache user `www-data` in `/etc/apache2/envvar`
@@ -164,16 +163,77 @@ host    all             all             127.0.0.1/32            md5
 
 ### App configuration 
 Web-server has been configured to serve the Item Catalog application as a wsgi app.
+
+- Navigated to the project directory `/var/www/TriviaCatalogApp` and downloaded the repo:
+```ssh
+$ git clone https://github.com/daliavi/trivia-catalog-postgres.git
+```
+
 - created wsgi file 
-```$ nano /var/www/trivia-catalog-app/trivia-catalog-app.wsgi```
+```ssh
+$ nano /var/www/TriviaCatalogApp/TriviaCatalogApp.wsgi
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/var/www/TriviaCatalogApp/")
+from TriviaCatalogApp import app as application
+application.secret_key = 'super_secret_key'
+```
+
 - added apache configuration file for the web app 
-```$ nano /etc/apache2/sites-available/trivia-catalog-app.conf```
+```
+$ nano /etc/apache2/sites-available/trivia-catalog-app.conf
+<VirtualHost *:80>
+		ServerName ec2-52-11-253-245.us-west-2.compute.amazonaws.com
+		ServerAdmin admin@local
+		DocumentRoot "/var/www/TriviaCatalogApp/TriviaCatalogApp"
+		WSGIScriptAlias / /var/www/TriviaCatalogApp/TriviaCatalogApp.wsgi
+		<Directory /var/www/TriviaCatalogApp/TriviaCatalogApp/>
+			Order allow,deny
+			Allow from all
+		</Directory>
+		Alias /static /var/www/TriviaCatalogApp/TriviaCatalogApp/static
+		<Directory /var/www/TriviaCatalogApp/TriviaCatalogApp/static/>
+			Order allow,deny
+			Allow from all
+		</Directory>
+		Alias /static/avatar /var/www/TriviaCatalogApp/TriviaCatalogApp/static/avatar
+                <Directory /var/www/TriviaCatalogApp/TriviaCatalogApp/static/avatar/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+		ErrorLog ${APACHE_LOG_DIR}/error.log
+		LogLevel warn
+		CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+
 - changed the owner of the app files
-```$ chown -R www-data *```
+```ssh
+$cd /var/www/TriviaCatalogApp
+$ chown -R www-data *
+```
+
 - adjusted read/write permissions for static/avatar directories
-(it was probably not needed, but I missed them up while trying to run the app as grader)
-- updated Google and Facebook oauth with valid URIs with the new IP and URL
+(it was probably not needed, but I messed them up while trying to run the app as a grader)
+- updated Google and Facebook oauth config with the new IP and URL. Google secrets `client_secrets.json` file had to be updated as well.
+```
+http://52.11.253.245
+http://ec2-52-11-253-245.us-west-2.compute.amazonaws.com
+```
 - changed connection from SQLite to PostgreSQL
+```python
+def db_connect():
+    """
+    Performs database connection using database settings from settings.py.
+    Returns sqlalchemy engine instance
+    """
+    return create_engine(URL(**settings.DATABASE))
+...    
+engine = db_connect()
+Base.metadata.create_all(engine)
+```
 - renamed `project.py` to `__init__.py`
 ```$mv project.py __init__.py ```
 - changed file paths to the credential files and in the photo upload method in `__init__.py`
